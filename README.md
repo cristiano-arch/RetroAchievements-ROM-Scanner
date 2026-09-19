@@ -1,3 +1,5 @@
+VER ARQUIVO: "Correcoes.log"
+
 # RetroAchievements ROM Scanner (ra-scan)
 
 ![npm](https://img.shields.io/npm/v/ra-scan)

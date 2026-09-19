@@ -1,0 +1,105 @@
+
+Minha máquina é windows 11:
+
+Rodar o .exe sem instalar nada não funcionou! Nem executando pelo comando no consoloe como indicado, mesmo tendo o node instalado e
+configurado nas variaveis de ambiente do sistema.
+
+Baixei as pastas completas para seguir com o tutorial de "Getting Started"
+
+OBS: Tem que ter o node instalado e configurado nas variaveis de ambiente do sistema!
+
+Após executar o "npm install" precisei rodar "npm run build" para ser criada a pasta "dist"
+
+Após isso consegui rodar o seguinte comando:
+
+    npm run start -- -k YOUR_API_KEY ./ROMs/
+
+ex do comando substituindo por uma chave imaginaria:
+
+    npm run start -- -k asdoih1982uendoi8oas ./ROMs/
+
+OBS: Caso tenha descompactado o projeto em uma raíz mais a fundo de onde se encontra seus jogos é possível utilizar o "../" para retornar
+pastas do diretório a ser informando na linha de comando, ex: ../../../../../../../../RetroArch/games/Snes/ROMs
+onde cada "../" representa um subnível de diretório onde o projeto foi descompactado. Pra facilitar e não ter problema com isso é melhor
+descompactar o projeto em uma pasta próximo ou somente 1 nível a cima de onde se encontram os jogos.
+
+    NUNCA COMPARTILHE SUA CHAVE DE API!!! (RECOMENDAÇÃO DO PRÓPRIO retroachievements)
+
+De cara o projeto original esta apresentando erro no arquivo: dist/paths.js
+Pois esta criando um caminho de diretório padrão a mais do que o necessário, ex:
+    
+    C:\C:\Users\crist...
+
+quando deveria ser somente:
+
+    C:\Users\crist
+
+Além disso notei diversos outros problemas e identifiquei algumas melhorias de fluxo.
+Como ja tava com a mão na massa decidi ajustar o restante Mas
+Como não trabalho com essa linguagem solicitei os ajustes para o chatGPT que praticamente refez
+as classes de acordo com meu feedback de testes:
+
+    dist/index.js e dist/detectSystems.js
+
+        O index é o Arquivo principal de execução, foi ajustado para se adequar aos ajustes implementados no detectSystems.js
+        que é chamado no index para identificar em qual Banco de Dados de qual console determinado arquivo será verificado:
+
+        Ajustado para:
+
+            Não considera mais a extensão do arquivo para definir o console, pois caso o nome da pasta indicada não batesse com nenhum
+            console da lista em SystemsMap.js ele tava considerando o primeiro console que batia com aquela extensão na lista, ex:
+
+                pasta com nomenclatura aleatória -> jogos de ps2 -> .iso -> Procurava na biblioteca do gamecube pois vem primeiro que o ps2
+                na lista, o que ocasionava erro.
+
+            Agora a definição do console esta diretamente ligada somente com a nomenclatura do diretório, onde, pelo menos 1 dos subníveis
+            do diretorio deve apresentar a exata nomenclatura do console que se deseja fazer a verificação. Como auxilio, no index.js foi
+            colocada uma mensagem de retorno ao usuário indicando como deve ser a nomenclatura da pasta para cada console em caso de erro.
+
+                Os nomes das pastas e consoles são normalizados por detrás dos panos, ou seja, não precisa se preocupar com CAIXA ALTA...
+
+            A verificação só é feito para as extensões especificadas de cada console em SystemsMap.js. ex:
+
+                pasta de ps2 com arquivos .n64 -> indica que é arquivo de extensão inválida
+
+                Com exceção do ps1, onde a maioria dos jogos são salvos como .cue e .bin, com exceção de quem converte para .chd,
+                não vi necessidade de informar no log que o arquivo .bin é inválido na leitura desse console, nesse caso so da pra
+                ver essa situaçao no final do console onde vai estar inidicando a quantidade de extensões inválidas.
+
+                No ps2 por exemplo, alem dessa quantiade no final do console, vai ser possível visualizar o diretorio da extensão
+                invalida logo a cima ou a abaixo do log do que foi lido corretamente, ja que aqui será bem menos casos. Isso foi So
+                pra otimizar a visualização, n sujar o console sem necessidade pra facilitar na visualização...
+
+                    O ps1 vai mostrar dessa forma tambem mas so se for outro tipo de formato, exemplo: .iso...
+
+            Se for arquivo compactado vai ser considerado a extensão do arquivo interno e não o .zip ou .7z por exemplo...
+
+        Busca recursiva na pasta foi mantida!!!
+
+    dist/SystemsMap.js
+
+        Ajustado para
+            
+            ps1 removido a leitura de arquivo .bin;
+            ps2 adicionado a leitura de arquivo .cue;
+
+        Pois temos alguns jogos de ps2 que sao nesse formato e o .cue ja aponta para o .bin!
+        Se tiver acusando erro no arquivo .cue dizendo que não consegue encontrar a referencia do .bin
+        é só editar o .cue com notepad ajustando a referencia para o exato nome do seu .bin
+
+OBS:
+
+    Foi feito um backup de todas as classes alteradas onde a nomenclatura ficou identificada como: "... - Copia";
+
+    So testei pros consoles: snes; n64; psx; ps2; psp;
+
+Melhoria identificada mas não implementada em dist/scanSource.js:
+
+    Por questão de performance não faz sentido verificar arquivos que estão em pastas que não pertencem a console.
+    Ta sendo um processamento burro. Mas como o objetivo ja foi atendido preferi não me preocupar com isso, so foi
+    feito um quebra galho omitindo essa informação da exibição. mas por tras dos panos se tiver arquivos dentro da pasta
+    indicada que não é um console, esses arquivos serão lidos mas o resultado apresentado mentirá informando que não houve lidos...
+
+    O próprio chat indicou que seria interessante criar um arquivo .txt para indicar os arquivo com extensão inválida assim
+    como ja funciona para os supporte_games.txt por exemplo. Resolveria a questão de sujar o console quando é ps1 também,
+    mas não dei seguimento nisso...

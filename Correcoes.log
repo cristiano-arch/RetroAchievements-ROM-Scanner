@@ -6,7 +6,14 @@ configurado nas variaveis de ambiente do sistema.
 
 Baixei as pastas completas para seguir com o tutorial de "Getting Started"
 
-OBS: Tem que ter o node instalado e configurado nas variaveis de ambiente do sistema!
+OBS: 
+    
+    Tem que ter o node instalado e configurado nas variaveis de ambiente do sistema!
+
+    Recomendo vscode com gitbash configurado como terminal, mas qualquer editor de texto e qualquer terminal funciona da mesma forma.
+
+    Para executar os comandos tem que abrir o terminal na pasta raiz do projeto. Ou se tiver com vscode o terminal provavelmente ja se encontra
+    no caminho correto.
 
 Após executar o "npm install" precisei rodar "npm run build" para ser criada a pasta "dist"
 
@@ -60,7 +67,10 @@ as classes de acordo com meu feedback de testes:
 
             A verificação só é feito para as extensões especificadas de cada console em SystemsMap.js. ex:
 
-                pasta de ps2 com arquivos .n64 -> indica que é arquivo de extensão inválida
+                pasta de ps2 com arquivos .n64 -> indica que é arquivo de extensão inválida:
+
+                    Antes, nessa situacao o jogo era buscado na biblioteca do n64, mas n gostei dessa forma pois deixei a busca mais amarrada
+                    quanto a definiçao do usuário.
 
                 Com exceção do ps1, onde a maioria dos jogos são salvos como .cue e .bin, com exceção de quem converte para .chd,
                 não vi necessidade de informar no log que o arquivo .bin é inválido na leitura desse console, nesse caso so da pra
@@ -93,6 +103,10 @@ OBS:
 
     So testei pros consoles: snes; n64; psx; ps2; psp;
 
+    Fiz essa alterações para ficar mais comodo quanto a minha estrutura de diretórios, pois guardo os jogos organizados.
+    Provavelmente essas alterações vai dificultar para quem tem os jogos desorganizados em uma pasta unica por exemplo...
+    Dai é so utilizar o projeto original mesmo...
+
 Melhoria identificada mas não implementada em dist/scanSource.js:
 
     Por questão de performance não faz sentido verificar arquivos que estão em pastas que não pertencem a console.
@@ -103,3 +117,9 @@ Melhoria identificada mas não implementada em dist/scanSource.js:
     O próprio chat indicou que seria interessante criar um arquivo .txt para indicar os arquivo com extensão inválida assim
     como ja funciona para os supporte_games.txt por exemplo. Resolveria a questão de sujar o console quando é ps1 também,
     mas não dei seguimento nisso...
+
+    Certifique-se de que dentro da pasta compactada se encontra apenas o arquivo do jogo. Tive alguns casos em que a pasta
+    compactada tinha arquivos .txt ou .html e o programa ignora a leitura da pasta completa n exibindo o resultado
+    desse jogo no console final. Como foram poucos casos pra mim, preferi resolver potnualmente ajustando minhas pastas.
+    Mas seria o caso de investigar e corrigir o código tbm.
+
